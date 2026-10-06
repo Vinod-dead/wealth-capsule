@@ -1,3 +1,4 @@
+
 from app.services.financial_service import analyze_finances
 
 
@@ -6,13 +7,17 @@ def generate_monthly_report(
     previous_file: str | None = None,
 ) -> dict:
     """
-    Generate a structured spending report using
-    the existing local financial analysis.
+    Generate a structured monthly spending report.
+
+    The demo report uses September 2026 as the
+    current analysis month.
     """
 
     result = analyze_finances(
         current_file=current_file,
         previous_file=previous_file,
+        current_year=2026,
+        current_month=9,
     )
 
     analysis = result["analysis"]

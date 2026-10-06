@@ -1,3 +1,4 @@
+
 from app.services.financial_service import analyze_finances
 
 
@@ -6,8 +7,8 @@ def budget_review(
     previous_file: str | None = None,
 ) -> dict:
     """
-    Review spending patterns and highlight categories
-    that may need attention.
+    Review September 2026 spending patterns and highlight
+    categories that may need attention.
 
     This is educational guidance, not professional
     financial advice.
@@ -16,11 +17,12 @@ def budget_review(
     result = analyze_finances(
         current_file=current_file,
         previous_file=previous_file,
+        current_year=2026,
+        current_month=9,
     )
 
     analysis = result["analysis"]
     categories = analysis["category_totals"]
-
     total = analysis["total_spending"]
 
     category_percentages = {
