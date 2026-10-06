@@ -34,6 +34,11 @@ User question:
 
 Give a concise answer directly to the user.
 
+Currency rule:
+- All financial amounts in the provided context are Indian Rupees.
+- Always use INR or ₹ for financial amounts.
+- Never use $ or USD.
+
 Rules:
 - Use only the provided financial context.
 - Do not invent transactions or personal information.
