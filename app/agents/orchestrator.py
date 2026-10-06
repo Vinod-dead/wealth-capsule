@@ -31,13 +31,22 @@ def handle_request(
         }
 
     if skill == "spending_analysis":
-        result = spending_analysis(current_file, previous_file)
+        result = spending_analysis(
+            current_file,
+            previous_file,
+        )
 
     elif skill == "monthly_report":
-        result = generate_monthly_report(current_file, previous_file)
+        result = generate_monthly_report(
+            current_file,
+            previous_file,
+        )
 
     elif skill == "budget_review":
-        result = budget_review(current_file, previous_file)
+        result = budget_review(
+            current_file,
+            previous_file,
+        )
 
     else:
         result = financial_education(user_request)
