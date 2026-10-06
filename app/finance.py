@@ -1,7 +1,7 @@
-
 import csv
 from pathlib import Path
 from collections import defaultdict
+
 
 DATA_DIR = Path("data/demo")
 
@@ -48,6 +48,34 @@ def spending_by_category(transactions):
     )
 
 
+def compare_category_changes(previous_categories, current_categories):
+    """
+    Calculate the actual spending change for each category.
+
+    Positive values mean spending increased.
+    Negative values mean spending decreased.
+    """
+
+    categories = set(previous_categories) | set(current_categories)
+
+    changes = {
+        category: round(
+            current_categories.get(category, 0)
+            - previous_categories.get(category, 0),
+            2,
+        )
+        for category in categories
+    }
+
+    return dict(
+        sorted(
+            changes.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )
+    )
+
+
 def compare_months(previous_file, current_file):
     previous = load_transactions(previous_file)
     current = load_transactions(current_file)
@@ -62,13 +90,22 @@ def compare_months(previous_file, current_file):
     else:
         percentage = 0
 
+    previous_categories = spending_by_category(previous)
+    current_categories = spending_by_category(current)
+
+    category_changes = compare_category_changes(
+        previous_categories,
+        current_categories,
+    )
+
     return {
         "previous_total": previous_total,
         "current_total": current_total,
         "change": change,
         "percentage_change": percentage,
-        "previous_categories": spending_by_category(previous),
-        "current_categories": spending_by_category(current),
+        "previous_categories": previous_categories,
+        "current_categories": current_categories,
+        "category_changes": category_changes,
     }
 
 
@@ -90,3 +127,8 @@ if __name__ == "__main__":
 
     for category, amount in result["current_categories"].items():
         print(f"{category}: INR {amount:,.2f}")
+
+    print("\nCategory changes:")
+
+    for category, change in result["category_changes"].items():
+        print(f"{category}: INR {change:+,.2f}")

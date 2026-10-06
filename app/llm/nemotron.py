@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from app.services.response_service import clean_model_response
+from app.privacy.research_sanitizer import sanitize_research_results
 
 
 load_dotenv()
@@ -18,32 +19,109 @@ client = OpenAI(
 MODEL = "nvidia/Nemotron-3_5-Lightning"
 
 
-def ask_nemotron(safe_context: dict, user_question: str) -> str:
-    """
-    Send only privacy-safe financial context to Nemotron.
-    """
+def ask_nemotron(
+    safe_context: dict,
+    user_question: str,
+    research_results: list[dict] | None = None,
+    memories: list[dict] | None = None,
+) -> str:
+
+    research_results = research_results or []
+    memories = memories or []
+
+    # Sanitize external Tavily content before giving it to Nemotron
+    research_results = sanitize_research_results(
+        research_results
+    )
+
+    # Build Tavily research context
+    research_context = "\n".join(
+        [
+            (
+                f"Source: {result.get('title')}\n"
+                f"URL: {result.get('url')}\n"
+                f"Information: {result.get('content')}"
+            )
+            for result in research_results
+        ]
+    )
+
+    if not research_context:
+        research_context = (
+            "No external research was requested."
+        )
+
+    # Build persistent-memory context
+    memory_context = "\n".join(
+        [
+            (
+                f"Memory type: {memory.get('memory_type')}\n"
+                f"Memory: {memory.get('content')}"
+            )
+            for memory in memories
+        ]
+    )
+
+    if not memory_context:
+        memory_context = (
+            "No relevant memories were found."
+        )
 
     prompt = f"""
 You are Wealth Capsule, a privacy-preserving personal AI assistant.
 
-Safe financial context:
+Private financial context:
 {safe_context}
+
+Public research from Tavily:
+{research_context}
+
+Relevant persistent memory:
+{memory_context}
 
 User question:
 {user_question}
 
 Give a concise answer directly to the user.
 
-Currency rule:
-- All financial amounts in the provided context are Indian Rupees.
+Financial data rules:
+- All financial amounts in the private context are Indian Rupees.
 - Always use INR or ₹ for financial amounts.
 - Never use $ or USD.
+- The field "category_changes" contains the verified
+  month-to-month change for each spending category.
+- Use "category_changes" when explaining which categories
+  increased or decreased.
+- Never calculate a category increase by treating the
+  current category total as the increase.
+- Positive category_changes values mean spending increased.
+- Negative values mean spending decreased.
+- Do not invent financial values.
 
-Rules:
-- Use only the provided financial context.
-- Do not invent transactions or personal information.
+Privacy rules:
+- Private financial context contains only aggregated information.
+- Never invent transactions or personal information.
+- Never claim that private transaction records were sent to Tavily.
+- Tavily receives only public research queries.
+
+Research rules:
+- Use Tavily information only when it is relevant.
+- Do not invent facts or sources.
+- When research is used, cite sources using their URLs.
+- Clearly distinguish the user's private spending data
+  from general public information.
+
+Memory rules:
+- Use persistent memory only when it is relevant to the user's question.
+- Treat memories as historical context, not guaranteed current facts.
+- Never invent memories.
+- Never expose internal memory IDs or database details to the user.
+
+Safety:
 - Do not provide professional financial advice.
-- Return only the final answer.
+- Give educational and organizational guidance only.
+
+Return only the final user-facing answer.
 """
 
     response = client.chat.completions.create(
@@ -55,7 +133,7 @@ Rules:
             }
         ],
         temperature=0.2,
-        max_tokens=300,
+        max_tokens=500,
         extra_body={
             "chat_template_kwargs": {
                 "enable_thinking": False

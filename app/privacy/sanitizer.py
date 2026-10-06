@@ -5,11 +5,13 @@ def sanitize_financial_context(
     total_spending: float,
     category_totals: Dict[str, float],
     previous_total: float | None = None,
+    category_changes: Dict[str, float] | None = None,
 ) -> Dict[str, Any]:
     """
     Create a minimized financial context for an AI model.
 
     Raw transaction records are intentionally not included.
+    Only aggregated financial information is returned.
     """
 
     sorted_categories = sorted(
@@ -38,5 +40,17 @@ def sanitize_financial_context(
         context["previous_total"] = round(previous_total, 2)
         context["change"] = round(change, 2)
         context["percentage_change"] = round(percentage_change, 2)
+
+    if category_changes:
+        sorted_changes = sorted(
+            category_changes.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )
+
+        context["category_changes"] = {
+            category: round(change, 2)
+            for category, change in sorted_changes
+        }
 
     return context

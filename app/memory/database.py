@@ -65,3 +65,74 @@ def get_memories(limit: int = 10) -> list[dict]:
         }
         for row in rows
     ]
+
+
+def search_memories(
+    query: str,
+    limit: int = 5,
+) -> list[dict]:
+    """
+    Retrieve memories containing relevant query terms.
+    """
+
+    if not isinstance(query, str) or not query.strip():
+        return []
+
+    words = [
+        word.strip().lower()
+        for word in query.split()
+        if len(word.strip()) >= 3
+    ]
+
+    if not words:
+        return []
+
+    connection = get_connection()
+
+    conditions = " OR ".join(
+        ["LOWER(content) LIKE ?" for _ in words]
+    )
+
+    parameters = [
+        f"%{word}%"
+        for word in words
+    ]
+
+    parameters.append(limit)
+
+    rows = connection.execute(
+        f"""
+        SELECT id, memory_type, content, created_at
+        FROM memories
+        WHERE {conditions}
+        ORDER BY id DESC
+        LIMIT ?
+        """,
+        parameters,
+    ).fetchall()
+
+    connection.close()
+
+    return [
+        {
+            "id": row[0],
+            "memory_type": row[1],
+            "content": row[2],
+            "created_at": row[3],
+        }
+        for row in rows
+    ]
+def delete_memory(memory_id: int) -> None:
+    """
+    Delete one specific memory by ID.
+    """
+
+    connection = get_connection()
+
+    connection.execute(
+        "DELETE FROM memories WHERE id = ?",
+        (memory_id,),
+    )
+
+    connection.commit()
+    connection.close()

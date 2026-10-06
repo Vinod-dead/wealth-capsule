@@ -4,6 +4,7 @@ ALLOWED_MODEL_FIELDS = {
     "previous_total",
     "change",
     "percentage_change",
+    "category_changes",
 }
 
 
