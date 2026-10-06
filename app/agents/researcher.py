@@ -9,4 +9,7 @@ def run_research(query: str) -> dict:
     Private financial transaction data must never be passed here.
     """
 
-    return research_topic(query)
+    if not isinstance(query, str) or not query.strip():
+        raise ValueError("Research query must be a non-empty string.")
+
+    return research_topic(query.strip())
