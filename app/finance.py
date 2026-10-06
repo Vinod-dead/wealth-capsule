@@ -1,7 +1,7 @@
+
 import csv
 from pathlib import Path
 from collections import defaultdict
-from datetime import datetime
 
 DATA_DIR = Path("data/demo")
 
@@ -11,6 +11,17 @@ def load_transactions(filename):
 
     with file_path.open("r", encoding="utf-8") as file:
         return list(csv.DictReader(file))
+
+
+def filter_by_month(transactions, year: int, month: int):
+    """
+    Return transactions belonging to a specific year and month.
+    """
+    return [
+        row
+        for row in transactions
+        if row["date"].startswith(f"{year:04d}-{month:02d}-")
+    ]
 
 
 def calculate_total(transactions):
@@ -28,7 +39,13 @@ def spending_by_category(transactions):
         if row["type"] == "expense":
             totals[row["category"]] += float(row["amount"])
 
-    return dict(sorted(totals.items(), key=lambda item: item[1], reverse=True))
+    return dict(
+        sorted(
+            totals.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )
+    )
 
 
 def compare_months(previous_file, current_file):
@@ -58,13 +75,16 @@ def compare_months(previous_file, current_file):
 if __name__ == "__main__":
     result = compare_months(
         "august_transactions.csv",
-        "transactions.csv"
+        "transactions.csv",
     )
 
     print(f"August spending: INR {result['previous_total']:,.2f}")
     print(f"Current-period spending: INR {result['current_total']:,.2f}")
     print(f"Change: INR {result['change']:,.2f}")
-    print(f"Percentage change: {result['percentage_change']:.2f}%")
+    print(
+        f"Percentage change: "
+        f"{result['percentage_change']:.2f}%"
+    )
 
     print("\nCurrent spending by category:")
 
