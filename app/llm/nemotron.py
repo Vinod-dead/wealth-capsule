@@ -91,7 +91,8 @@ Financial data rules:
 - Never infer category changes from current category totals alone.
 - Never invent, estimate, or assume a financial amount that is missing from the supplied context.
 - If a requested comparison is missing from the context, clearly state that the data is unavailable.
-- A category absent from the current month's totals may have no recorded transactions. Do not claim the user definitely spent nothing in that category.
+- If a category appears in the previous month but is absent from the current month's totals, explain that no transactions for that category were recorded in the available current-month data.
+- Do not state or imply that the user definitely spent nothing in that category. Describe a 100% decrease only as a change in the recorded data, not proof of zero real-world spending.
 - When reporting a decrease or increase, use the exact supplied values and describe the direction correctly.
 - Distinguish calculated facts from suggestions.
 - If the user asks about the monthly comparison and the required values are present, state the previous total, current total, absolute change, and percentage change.

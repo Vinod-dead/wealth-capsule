@@ -1663,3 +1663,210 @@ a {
     grid-template-columns: 1fr;
   }
 }
+/* Wealth Capsule — dark developer workspace theme */
+
+:root {
+  color-scheme: dark;
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-strong: #1c2129;
+  --border: #30363d;
+  --muted: #8b949e;
+  --text: #e6edf3;
+  --cyan: #a371f7;
+  --green: #3fb950;
+  --red: #f85149;
+  --radius: 12px;
+}
+
+.app {
+  color: var(--text);
+  background: var(--bg);
+}
+
+.navbar {
+  background: rgba(13, 17, 23, 0.92);
+  border-bottom-color: var(--border);
+}
+
+.brand-symbol {
+  background: var(--cyan);
+  color: #ffffff;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.brand-name,
+.hero-content h1,
+.dashboard-header h2,
+.big-number,
+.feature-card h3,
+.memory-content h3 {
+  color: var(--text);
+}
+
+.brand-status,
+.nav-links,
+.online-status,
+.hero-description,
+.hero-trust span,
+.dashboard-date,
+.card-top,
+.feature-card p,
+.memory-content p {
+  color: var(--muted);
+}
+
+.nav-links a:hover {
+  color: var(--cyan);
+}
+
+.hero-content h1 span,
+.dashboard-footer span:last-child {
+  color: var(--cyan);
+}
+
+.hero-visual {
+  background:
+    radial-gradient(circle at 50% 48%, rgba(163, 113, 247, 0.13), transparent 42%),
+    #10151d;
+  border-left-color: var(--border);
+}
+
+.hero-visual::before,
+.hero-visual::after {
+  border-color: rgba(163, 113, 247, 0.15);
+}
+
+.visual-label {
+  color: var(--text);
+  background: rgba(22, 27, 34, 0.9);
+  border-color: var(--border);
+}
+
+.dashboard {
+  background: var(--bg);
+  border-top-color: var(--border);
+}
+
+.card {
+  background: var(--panel);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.card:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.big-number,
+.category-value,
+.category-name,
+.feature-card h3 {
+  color: var(--text);
+}
+
+.category-progress {
+  background: #30363d;
+}
+
+.category-progress-fill {
+  background: linear-gradient(90deg, #8957e5, #a371f7);
+}
+
+.feature-icon,
+.memory-icon {
+  color: var(--cyan);
+  background: #241b35;
+  border-color: #44316b;
+}
+
+.tavily-icon,
+.privacy-circle {
+  color: var(--green);
+  background: #14271b;
+  border-color: #285637;
+}
+
+.memory-count strong {
+  color: var(--cyan);
+}
+
+.dashboard-footer {
+  border-top-color: var(--border);
+}
+
+.ask-status,
+.privacy-status {
+  background: var(--panel-strong);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.ask-input-area textarea {
+  background: #0d1117;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.ask-response,
+.ask-loading {
+  background: #0d1117;
+  border-color: var(--border);
+}
+
+.response-text,
+.source-item strong {
+  color: var(--text);
+}
+
+.response-meta span {
+  background: var(--panel-strong);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.source-list,
+.source-item {
+  border-color: var(--border);
+}
+
+.privacy-item {
+  background: var(--panel-strong);
+  border-color: var(--border);
+}
+
+.privacy-item strong {
+  color: var(--text);
+}
+
+.privacy-item small,
+.privacy-audit-header p {
+  color: var(--muted);
+}
+
+.secondary-button {
+  background: var(--panel);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.secondary-button:hover {
+  background: var(--panel-strong);
+}
+
+.primary-button {
+  background: var(--cyan);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.primary-button:hover {
+  background: #8957e5;
+}
+
+@media (max-width: 600px) {
+  .hero-visual {
+    border-top-color: var(--border);
+  }
+}

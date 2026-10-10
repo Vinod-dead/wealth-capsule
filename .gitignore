@@ -16,7 +16,8 @@ frontend/dist/
 
 # Test and tooling caches
 .pytest_cache/
-.coverage# Local frontend recovery files
+.coverage
+# Local frontend recovery files
 /frontend/App.jsx
 /frontend/src/App.jsx.audit-backup
 /frontend/src/App.jsx.backup
@@ -25,3 +26,9 @@ frontend/dist/
 # Frontend build output and dependencies
 /frontend/node_modules/
 /frontend/dist/
+# Local backup and recovery files
+*.backup
+*.copilot-backup
+
+# Temporary CSS reference
+wealth-app-css.txt
