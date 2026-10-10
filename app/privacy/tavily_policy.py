@@ -6,6 +6,7 @@ SENSITIVE_PATTERNS = [
     r"₹\s?\d[\d,]*(?:\.\d+)?",
     r"\bINR\s?\d[\d,]*(?:\.\d+)?",
     r"\b\d[\d,]*(?:\.\d+)?\s?(?:rupees|rs)\b",
+    r"\b\d{1,3}(?:,\d{3})+(?:\.\d+)?\b",
 
     # Percentages
    r"\b\d+(?:\.\d+)?\s?(?:%|percent\b|percentage\b)",

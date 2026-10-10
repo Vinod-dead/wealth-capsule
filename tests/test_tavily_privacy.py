@@ -55,3 +55,12 @@ def test_sensitive_query_is_blocked_before_tavily_is_called():
             search_public_knowledge("reduce spending by ₹10,900")
 
         client.assert_not_called()
+        
+def test_comma_formatted_financial_amounts_are_blocked_before_tavily_is_called():
+    query = "Expenses of 29,500 and food spending of 10,950"
+
+    with patch("app.tools.tavily_tool.TavilyClient") as client:
+        with pytest.raises(ValueError, match="sensitive_data_detected"):
+            search_public_knowledge(query)
+
+        client.assert_not_called()
