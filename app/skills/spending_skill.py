@@ -15,7 +15,9 @@ def spending_analysis(
 
     return analyze_finances(
         current_file=current_file,
-        previous_file=previous_file,
+        previous_file=previous_file or current_file,
         current_year=2026,
-        current_month=9,
+        current_month=10,
+        previous_year=2026,
+        previous_month=9,
     )

@@ -13,15 +13,9 @@ def analyze_finances(
     previous_file: str | None = None,
     current_year: int | None = None,
     current_month: int | None = None,
+    previous_year: int | None = None,
+    previous_month: int | None = None,
 ) -> dict:
-    """
-    Analyze private financial data locally and create
-    a privacy-safe context for the AI model.
-
-    When year and month are provided, only transactions
-    from that month are analyzed.
-    """
-
     current_transactions = load_transactions(current_file)
 
     if current_year is not None and current_month is not None:
@@ -40,6 +34,13 @@ def analyze_finances(
 
     if previous_file:
         previous_transactions = load_transactions(previous_file)
+
+        if previous_year is not None and previous_month is not None:
+            previous_transactions = filter_by_month(
+                previous_transactions,
+                previous_year,
+                previous_month,
+            )
 
         previous_total = calculate_total(previous_transactions)
         previous_categories = spending_by_category(previous_transactions)

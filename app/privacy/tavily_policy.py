@@ -8,8 +8,7 @@ SENSITIVE_PATTERNS = [
     r"\b\d[\d,]*(?:\.\d+)?\s?(?:rupees|rs)\b",
 
     # Percentages
-    r"\b\d+(?:\.\d+)?\s?%",
-
+   r"\b\d+(?:\.\d+)?\s?(?:%|percent\b|percentage\b)",
     # Email addresses
     r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b",
 

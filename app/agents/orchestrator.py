@@ -10,61 +10,35 @@ from app.skills.financial_education_skill import financial_education
 def handle_request(
     user_request: str,
     current_file: str = "transactions.csv",
-    previous_file: str | None = "august_transactions.csv",
+    previous_file: str | None = "transactions.csv",
 ) -> dict:
-    """
-    Route a Wealth Capsule request through local financial
-    analysis, public research, and Nemotron.
-
-    Private financial data is analyzed locally.
-    Tavily receives only the safe research query created
-    by the Planner.
-    """
 
     plan = plan_request(user_request)
+
     skill = plan["skill"]
 
     research_results = []
+
+    # Retrieve relevant persistent memories
     memories = retrieve_memory(user_request)
 
-    # Pure research request
-    if skill == "research":
-        research_query = plan.get("research_query")
-
-        if research_query:
-            result = run_research(research_query)
-        else:
-            result = {
-                "query": None,
-                "sources": [],
-                "source_count": 0,
-            }
-
-        return {
-            "plan": plan,
-            "result": result,
-        }
-
-    # Run the appropriate private-data skill
+    # Financial analysis
     if skill in {
-    "spending_analysis",
-    "monthly_report",
-    "budget_review",
-}:
-     result = run_analysis(
-        skill=skill,
-        current_file=current_file,
-        previous_file=previous_file,
-    )
+        "spending_analysis",
+        "monthly_report",
+        "budget_review",
+    }:
+        result = run_analysis(
+            skill=skill,
+            current_file=current_file,
+            previous_file=previous_file or current_file,
+        )
 
+    # General financial education
     else:
-     result = financial_education(user_request)
-    # ---------------------------------------------------------
+        result = financial_education(user_request)
+
     # Tavily research
-    # IMPORTANT:
-    # Never send the original private user request directly.
-    # Use only the Planner's safe public research query.
-    # ---------------------------------------------------------
     if plan.get("needs_research"):
         research_query = plan.get("research_query")
 
@@ -73,31 +47,26 @@ def handle_request(
                 research_query
             )["sources"]
 
-    # ---------------------------------------------------------
-    # Nemotron
-    # Only privacy-safe aggregated financial context is sent.
-    # ---------------------------------------------------------
-    safe_context = result.get("safe_ai_context")
-    if safe_context:
-        answer = generate_answer(
-            safe_context=safe_context,
-            user_question=user_request,
-            research_results=research_results,
-            memories=memories,
-        )
+    # Only send privacy-safe financial context to Nemotron
+    safe_context = result.get(
+        "safe_ai_context",
+        {},
+    )
 
-        validation = validate_answer(
-            answer=answer,
-            safe_context=safe_context,
-            research_results=research_results,
-        )
-    else:
-        answer = None
-        validation = {
-            "valid": False,
-            "financial_numbers": {},
-            "sources": {},
-        }
+    # Generate final answer
+    answer = generate_answer(
+        safe_context=safe_context,
+        user_question=user_request,
+        research_results=research_results,
+        memories=memories,
+    )
+
+    # Validate generated answer
+    validation = validate_answer(
+        answer=answer,
+        safe_context=safe_context,
+        research_results=research_results,
+    )
 
     return {
         "plan": plan,
@@ -107,4 +76,3 @@ def handle_request(
         "answer": answer,
         "validation": validation,
     }
-       

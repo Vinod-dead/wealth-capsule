@@ -1,56 +1,77 @@
 import re
-from urllib.parse import urlparse
 
 
 def extract_rupee_amounts(text: str) -> list[float]:
     """
-    Extract INR amounts such as ₹5,750 or ₹300.
+    Extract INR amounts written as:
+    ₹10,900
+    INR 10,900
+    10,900 INR
+    10,900 rupees
     """
 
     if not isinstance(text, str):
         return []
 
-    matches = re.findall(
-        r"₹\s?([\d,]+(?:\.\d+)?)",
-        text,
-    )
-
-    return [
-        float(value.replace(",", ""))
-        for value in matches
+    patterns = [
+        r"₹\s*([0-9][0-9,]*(?:\.[0-9]+)?)",
+        r"\bINR\s*([0-9][0-9,]*(?:\.[0-9]+)?)",
+        r"\b([0-9][0-9,]*(?:\.[0-9]+)?)\s*INR\b",
+        r"\b([0-9][0-9,]*(?:\.[0-9]+)?)\s*rupees\b",
     ]
+
+    amounts = []
+
+    for pattern in patterns:
+        matches = re.findall(
+            pattern,
+            text,
+            flags=re.IGNORECASE,
+        )
+
+        for value in matches:
+            try:
+                amounts.append(
+                    float(value.replace(",", ""))
+                )
+            except (ValueError, AttributeError):
+                pass
+
+    return amounts
 
 
 def extract_percentages(text: str) -> list[float]:
     """
-    Extract percentages such as 39.79%.
+    Extract percentages such as 53.96%.
     """
 
     if not isinstance(text, str):
         return []
 
     matches = re.findall(
-        r"(\d+(?:\.\d+)?)\s?%",
+        r"([0-9]+(?:\.[0-9]+)?)\s?%",
         text,
     )
 
-    return [float(value) for value in matches]
+    return [
+        float(value)
+        for value in matches
+    ]
 
 
 def validate_financial_numbers(
     answer: str,
     safe_context: dict,
 ) -> dict:
-    """
-    Verify that important financial values in the
-    model answer match locally calculated values.
-    """
 
     expected_amounts = []
 
     if safe_context.get("change") is not None:
         expected_amounts.append(
-            round(abs(float(safe_context["change"])), 2)
+            round(
+                abs(float(safe_context["change"])),
+                2,
+            )
         )
 
     expected_percentages = []
@@ -66,28 +87,25 @@ def validate_financial_numbers(
     actual_amounts = extract_rupee_amounts(answer)
     actual_percentages = extract_percentages(answer)
 
-    amount_checks = []
-
-    for expected in expected_amounts:
-        amount_checks.append(
-            any(
-                abs(actual - expected) < 0.01
-                for actual in actual_amounts
-            )
+    amount_checks = [
+        any(
+            abs(actual - expected) < 0.01
+            for actual in actual_amounts
         )
+        for expected in expected_amounts
+    ]
 
-    percentage_checks = []
-
-    for expected in expected_percentages:
-        percentage_checks.append(
-            any(
-                abs(actual - expected) < 0.01
-                for actual in actual_percentages
-            )
+    percentage_checks = [
+        any(
+            abs(actual - expected) < 0.01
+            for actual in actual_percentages
         )
+        for expected in expected_percentages
+    ]
 
-    numbers_valid = all(amount_checks) and all(
-        percentage_checks
+    numbers_valid = (
+        all(amount_checks)
+        and all(percentage_checks)
     )
 
     return {
@@ -105,10 +123,6 @@ def validate_source_urls(
     answer: str,
     research_results: list[dict],
 ) -> dict:
-    """
-    Verify that URLs appearing in the answer came from
-    the Tavily results used for this request.
-    """
 
     returned_urls = {
         result.get("url")
@@ -148,9 +162,6 @@ def validate_answer(
     safe_context: dict,
     research_results: list[dict] | None = None,
 ) -> dict:
-    """
-    Run all deterministic validation checks.
-    """
 
     research_results = research_results or []
 
