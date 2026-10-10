@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+﻿import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Environment,
   Float,
@@ -7,7 +7,11 @@ import {
 } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
-
+function fixCurrencyEncoding(text) {
+  return text
+    .replaceAll("â¹", "₹")
+    .replaceAll("â‚¹", "₹");
+}
 /* =========================================================
    3D CAPSULE
 ========================================================= */
@@ -205,7 +209,7 @@ function CategoryRow({
       </div>
 
       <span className="category-value">
-        â‚¹{value.toLocaleString("en-IN")}
+        &#8377;{value.toLocaleString("en-IN")}
       </span>
     </div>
   );
@@ -349,8 +353,8 @@ function App() {
         await response.json();
 
       setAnswer(
-        data.answer || ""
-      );
+  fixCurrencyEncoding(data.answer || "")
+);
 
       setSources(
         data.sources || []
@@ -655,7 +659,7 @@ const monthlySpending =
               OPEN CAPSULE
 
               <span>
-                â†’
+                &#8594;
               </span>
 
             </button>
@@ -807,7 +811,7 @@ const monthlySpending =
 
             <div className="big-number">
 
-              â‚¹
+              &#8377;
               {monthlySpending.toLocaleString(
                 "en-IN"
               )}
@@ -824,8 +828,8 @@ const monthlySpending =
             >
 
               {isIncrease
-                ? "â†‘"
-                : "â†“"}
+                ? "\u2191"
+                : "\u2193"}
 
               {" "}
 
@@ -935,7 +939,7 @@ const monthlySpending =
             </div>
 
             <div className="feature-icon">
-              âœ¦
+            MODEL  
             </div>
 
             <div className="feature-label">
@@ -983,7 +987,7 @@ const monthlySpending =
             </div>
 
             <div className="feature-icon tavily-icon">
-              â—‡
+              WEB
             </div>
 
             <div className="feature-label">
@@ -1084,7 +1088,7 @@ const monthlySpending =
               </div>
 
               <div className="memory-icon">
-                â—‰
+                MEM
               </div>
 
             </div>
@@ -1157,7 +1161,7 @@ const monthlySpending =
                 </div>
 
                 <div className="privacy-status">
-                  ðŸ”’ PROTECTED
+                  &#128274; PROTECTED
                 </div>
 
               </div>
@@ -1167,10 +1171,11 @@ const monthlySpending =
 
                 <div className="privacy-item">
 
-                  <span>âœ“</span>
+                  <span className="audit-check">1.</span>
 
                   <div>
 
+                    <span className="audit-icon">SAFE</span>
                     <strong>
                       Raw transactions
                     </strong>
@@ -1186,10 +1191,11 @@ const monthlySpending =
 
                 <div className="privacy-item">
 
-                  <span>âœ“</span>
+                  <span className="audit-check">2.</span>
 
                   <div>
 
+                    <span className="audit-icon">SAFE</span>
                     <strong>
                       Financial amounts
                     </strong>
@@ -1205,10 +1211,11 @@ const monthlySpending =
 
                 <div className="privacy-item">
 
-                  <span>âœ“</span>
+                  <span className="audit-check">3.</span>
 
                   <div>
 
+                    <span className="audit-icon">SAFE</span>
                     <strong>
                       Personal dates
                     </strong>
@@ -1224,10 +1231,11 @@ const monthlySpending =
 
                 <div className="privacy-item">
 
-                  <span>âœ“</span>
+                  <span className="audit-check">4.</span>
 
-                  <div>
+                  <div>s
 
+                    <span className="audit-icon">SAFE</span>
                     <strong>
                       External content
                     </strong>
@@ -1317,7 +1325,7 @@ const monthlySpending =
                   : "ASK CAPSULE"}
 
                 <span>
-                  â†’
+                  &#8594;
                 </span>
 
               </button>
@@ -1372,17 +1380,17 @@ const monthlySpending =
                 <div className="response-meta">
 
                   <span>
-                    ðŸ”’ PRIVATE CONTEXT
+                    &#128274; PRIVATE CONTEXT
                   </span>
 
                   <span>
-                    ðŸ§ NEMOTRON
+                    &#129504; NEMOTRON
                   </span>
 
 
                   {sources.length > 0 && (
                     <span>
-                      ðŸ”Ž TAVILY RESEARCH
+                    &#128269; TAVILY RESEARCH
                     </span>
                   )}
 
@@ -1446,7 +1454,7 @@ const monthlySpending =
           </span>
 
           <span>
-            NEBIUS Ã— NVIDIA Ã— TAVILY
+            NEBIUS TOKEN FACTORY
           </span>
 
         </div>

@@ -16,4 +16,12 @@ frontend/dist/
 
 # Test and tooling caches
 .pytest_cache/
-.coverage
+.coverage# Local frontend recovery files
+/frontend/App.jsx
+/frontend/src/App.jsx.audit-backup
+/frontend/src/App.jsx.backup
+/frontend/src/App.jsx.encoding-backup
+
+# Frontend build output and dependencies
+/frontend/node_modules/
+/frontend/dist/

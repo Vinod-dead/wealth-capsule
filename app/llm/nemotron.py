@@ -83,33 +83,18 @@ User question:
 {user_question}
 
 Give a concise answer directly to the user.
-
 Financial data rules:
-- All financial amounts in the private context are Indian Rupees.
-- Always use INR or ₹ for financial amounts.
-- Never use $ or USD.
-- The field "category_changes" contains the verified
-  month-to-month change for each spending category.
-- Use "category_changes" when explaining which categories
-  increased or decreased.
-- Never calculate a category increase by treating the
-  current category total as the increase.
-- Positive category_changes values mean spending increased.
-- Negative values mean spending decreased.
-- Do not invent financial values.
-- When comparing the current month with the previous month,
-  always state the total change amount and percentage change.
-- If the change is negative, clearly say spending decreased.
-- If the change is positive, clearly say spending increased.
-- Use the verified "change" field for the total change amount.
-- Format financial amounts with ₹.
-
-Privacy rules:
-- Private financial context contains only aggregated information.
-- Never invent transactions or personal information.
-- Never claim that private transaction records were sent to Tavily.
-- Tavily receives only public research queries.
-
+- All financial amounts are in Indian Rupees (INR). Use ₹ for currency.
+- Treat the private financial context as the sole source of truth for personal spending calculations.
+- Use the verified "change" and "percentage_change" fields for total month-to-month comparisons.
+- Use "category_changes" for category-level comparisons. Positive values mean increases; negative values mean decreases.
+- Never infer category changes from current category totals alone.
+- Never invent, estimate, or assume a financial amount that is missing from the supplied context.
+- If a requested comparison is missing from the context, clearly state that the data is unavailable.
+- A category absent from the current month's totals may have no recorded transactions. Do not claim the user definitely spent nothing in that category.
+- When reporting a decrease or increase, use the exact supplied values and describe the direction correctly.
+- Distinguish calculated facts from suggestions.
+- If the user asks about the monthly comparison and the required values are present, state the previous total, current total, absolute change, and percentage change.
 Research rules:
 - Use Tavily information only when it is relevant.
 - Do not invent facts or sources.

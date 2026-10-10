@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from app.skills.monthly_report_skill import generate_monthly_report
 from app.memory.service import recall
+from app.services.response_service import clean_model_response
 
 
 app = FastAPI(
@@ -101,8 +102,10 @@ def ask_capsule(request: AskRequest):
     )
 
     return {
-        "answer": result.get("answer", ""),
-        "sources": result.get("research", []),
-        "validation": result.get("validation", {}),
-        "plan": result.get("plan", {}),
-    }
+    "answer": clean_model_response(
+        result.get("answer", "")
+    ),
+    "sources": result.get("research", []),
+    "validation": result.get("validation", {}),
+    "plan": result.get("plan", {}),
+}
